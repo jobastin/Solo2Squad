@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "19937634399",
+    "firebase_url": "https://solo2squad-eed5a-default-rtdb.firebaseio.com",
+    "project_id": "solo2squad-eed5a",
+    "storage_bucket": "solo2squad-eed5a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19937634399:android:ebe0ce8c627d5afc4193ea",
+        "android_client_info": {
+          "package_name": "com.example.solo2squad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19937634399-lo3rdajqi82aob5jp77qvsmdrngcuf5d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYMtL55RpyM1nUNvU-qwUCEXj0PPsmaJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19937634399-lo3rdajqi82aob5jp77qvsmdrngcuf5d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
