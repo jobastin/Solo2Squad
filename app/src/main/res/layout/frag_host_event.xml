@@ -1,0 +1,87 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_green"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Host an Event"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:id="@+id/textViewTitle"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewTitle"
+        android:id="@+id/gameTypeSpinner"
+        android:layout_marginTop="16dp"
+        android:hint="Select Game Type"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gameTypeSpinner"
+        android:layout_marginTop="16dp"
+        android:id="@+id/locationEditText"
+        android:hint="Location (Select from Maps)"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/locationEditText"
+        android:layout_marginTop="16dp"
+        android:id="@+id/mapButton"
+        android:text="Select from Maps"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mapButton"
+        android:layout_marginTop="16dp"
+        android:id="@+id/dateAndTimeEditText"
+        android:hint="Date and Time"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dateAndTimeEditText"
+        android:layout_marginTop="16dp"
+        android:id="@+id/slotsEditText"
+        android:hint="Number of Slots"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/slotsEditText"
+        android:layout_marginTop="16dp"
+        android:id="@+id/priceEditText"
+        android:hint="Price per Person"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/priceEditText"
+        android:layout_marginTop="16dp"
+        android:id="@+id/descriptionEditText"
+        android:hint="Event Description"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/descriptionEditText"
+        android:layout_marginTop="16dp"
+        android:id="@+id/submitButton"
+        android:text="Submit"
+        />
+</RelativeLayout>
