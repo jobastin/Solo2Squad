@@ -1,10 +1,9 @@
-package com.example.solo2squad;
+package com.example.solo2squad.Authentication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -19,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.solo2squad.DashboardActivity;
+import com.example.solo2squad.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
         Log.e("SIGNUP",String.valueOf(auth.getCurrentUser()));
 //        if (auth.getCurrentUser() != null) {
-//            startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+//            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
 //            Log.e("Login", String.valueOf(auth.getCurrentUser()));
 //            finish();
 //        }
@@ -294,7 +295,7 @@ public class LoginActivity extends AppCompatActivity {
                             users.setProfile(user.getPhotoUrl().toString());
 
                             firebaseDatabase.getReference().child("GoogleSignInUsers").child(user.getUid()).setValue(users);
-                            Intent intent = new Intent(LoginActivity.this, SecondActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                             startActivity(intent);
                         }
                         else{

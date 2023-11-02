@@ -1,4 +1,4 @@
-package com.example.solo2squad;
+package com.example.solo2squad.Authentication;
 
 public class GoogleSignInUsers {
 

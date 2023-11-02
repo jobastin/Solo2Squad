@@ -1,4 +1,4 @@
-package com.example.solo2squad;
+package com.example.solo2squad.Authentication;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.solo2squad.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -20,10 +22,12 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText inputEmail, inputPassword;
+    private EditText inputEmail, inputPassword,inputPasswordC;
     private Button btnSignIn, btnSignUp, btnResetPassword;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+
+    private TextView loginTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +41,16 @@ public class SignupActivity extends AppCompatActivity {
         btnSignUp = (Button) findViewById(R.id.btn_reg);
         inputEmail = (EditText) findViewById(R.id.reg_email_txt);
         inputPassword = (EditText) findViewById(R.id.reg_password_txt);
+        inputPasswordC= (EditText) findViewById(R.id.reg_repassowrd_txt);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        //btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
+        loginTxt = findViewById(R.id.login_password_txt);
 
-//        btnResetPassword.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(SignupActivity.this, ResetPasswordActivity.class));
-//            }
-//        });
+        loginTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+            }
+        });
 
 //        btnSignIn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -60,6 +65,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                String Cpassword = inputPasswordC.getText().toString().trim();
                 Log.e("SIGNUP",email);
 
                 if (TextUtils.isEmpty(email)) {
@@ -71,9 +77,15 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                String passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{6,}$";
+                if (!password.matches(passwordPattern)) {
+                    Toast.makeText(getApplicationContext(), "Password Should have at least Minimum 6 \n characters, " +
+                            "at least one letter, one \n number and one special character.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+                if (!password.equals(Cpassword)) {
+                    Toast.makeText(getApplicationContext(), "Passwords do not match!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

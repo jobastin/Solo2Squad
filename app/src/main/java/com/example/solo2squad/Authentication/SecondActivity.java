@@ -1,6 +1,5 @@
-package com.example.solo2squad;
+package com.example.solo2squad.Authentication;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.solo2squad.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -58,7 +58,7 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public void onComplete(Task<Void> task) {
                 finish();
-                startActivity(new Intent(SecondActivity.this,MainActivity.class));
+                startActivity(new Intent(SecondActivity.this, MainActivity.class));
             }
         });
     }

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools1="http://schemas.android.com/tools"
-    tools1:context=".MainActivity">
+    tools1:context=".Authentication.MainActivity">
 
     <LinearLayout
         android:id="@+id/topbar"
