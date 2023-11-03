@@ -2,6 +2,10 @@ package com.example.solo2squad;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageButton;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,6 +26,10 @@ public class DashboardActivity extends AppCompatActivity {
     private FragHostEvents hostGameFragment;
     private FragManageEvents manageEventsFragment;
     private FragMySchedules upcomingGamesFragment;
+
+    private ImageButton profileButton;
+    private View profileOverlay;
+    private boolean isProfileVisible = false;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -75,6 +83,34 @@ public class DashboardActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        View profileOverlay = findViewById(R.id.profile_overlay);
+        View profileButton = findViewById(R.id.profileButton);
+
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleProfileOverlay(profileOverlay);
+            }
+        });
+    }
+
+    private void toggleProfileOverlay(View profileOverlay) {
+        float fromXDelta = isProfileVisible ? 0f : 1f;
+        float toXDelta = isProfileVisible ? 1f : 0f;
+
+        TranslateAnimation animation = new TranslateAnimation(
+                TranslateAnimation.RELATIVE_TO_PARENT, fromXDelta,
+                TranslateAnimation.RELATIVE_TO_PARENT, toXDelta,
+                TranslateAnimation.RELATIVE_TO_PARENT, 0f,
+                TranslateAnimation.RELATIVE_TO_PARENT, 0f
+        );
+
+        animation.setDuration(300); // Adjust the duration as needed
+
+        profileOverlay.startAnimation(animation);
+        profileOverlay.setVisibility(isProfileVisible ? View.GONE : View.VISIBLE);
+        isProfileVisible = !isProfileVisible;
     }
 
     private void setupViewPager(ViewPager viewPager) {
