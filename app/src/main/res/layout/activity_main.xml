@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools1="http://schemas.android.com/tools"
-    tools1:context=".Authentication.MainActivity">
+    android:background="@color/background_green">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools1="http://schemas.android.com/tools"
+        tools1:context=".Authentication.MainActivity">
 
     <LinearLayout
         android:id="@+id/topbar"
@@ -75,3 +79,50 @@
         android:background="?android:attr/windowBackground"
         app:menu="@menu/bottom_nav_menu" />
 </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/profile_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:visibility="gone">
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/profilePhotoImageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/profileimg" />
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/profilePhotoImageView"
+                android:layout_marginTop="8dp"
+                android:text="User Name"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/emailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/nameTextView"
+                android:layout_marginTop="8dp"
+                android:text="user@example.com"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+</FrameLayout>
+    </FrameLayout>
