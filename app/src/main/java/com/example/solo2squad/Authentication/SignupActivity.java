@@ -1,6 +1,7 @@
 package com.example.solo2squad.Authentication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,6 +20,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -97,20 +105,94 @@ public class SignupActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
+
+                                if (task.isSuccessful()) {
+                                    FirebaseUser user = auth.getCurrentUser();
+                                    String uid = user.getUid();
+                                    String email = user.getEmail();
+                                    Uri photoUrl = user.getPhotoUrl();
+                                    String name= user.getDisplayName();
+
+                                    // Send email verification
+                                    user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> emailTask) {
+                                            if (emailTask.isSuccessful()) {
+                                                Toast.makeText(SignupActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.e("Email Verification", "Failed to send verification email", emailTask.getException());
+                                            }
+                                        }
+                                    });
+
+                                    GoogleSignInUsers newUser;
+                                    Address userAddress = new Address("","", "", "");
+
+                                    if (photoUrl != null) {
+                                        //newUser = new GoogleSignInUsers(uid, email, "photoUrl"); // Empty profile image for now
+                                        newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"photoUrl","");
+
+                                    } else {
+                                        //newUser = new GoogleSignInUsers(uid, name, "",""); // Empty profile image for now
+                                        newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"","");
+                                    }
+                                    // Create a User object
+                                    DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+                                    usersRef.child(uid).setValue(newUser);
+
+                                    Toast.makeText(SignupActivity.this, "Authentication success.", Toast.LENGTH_SHORT).show();
+
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
+                                } else {
+                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
 
             }
+
+            // If sign in fails, display a message to the user. If sign in succeeds
+            // the auth state listener will be notified and logic to handle the
+            // signed in user can be handled in the listener.
+//                                if (!task.isSuccessful()) {
+//                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
+//                                            Toast.LENGTH_SHORT).show();
+//                                } else {
+//                                    Toast.makeText(SignupActivity.this, "Authentication success." + task.getException(),
+//                                            Toast.LENGTH_SHORT).show();
+//                                    //Adding data from Firebase database to Amazon RDS
+//                                    FirebaseUser user = auth.getCurrentUser();
+//                                    String uid = user.getUid();
+//                                    String email = user.getEmail();
+//                                    Log.e("user",String.valueOf(auth.getCurrentUser()));
+//                                    Log.e("uid",uid);
+//                                    Log.e("uid",email);
+//
+//
+//
+//                                    // Insert data into RDS database
+////                                    Connection connection = DatabaseConnection.getConnection();
+////                                    try {
+////                                        String sql = "INSERT INTO Solo2Squad.tbl_login(uid_firebase, email, `role`, first_time_login, status) VALUES('uid', 'email', 'user', 0, 1);";
+////
+////                                        PreparedStatement statement = connection.prepareStatement(sql);
+////                                        statement.setString(1, uid);
+////                                        statement.setString(2, email);
+////                                        statement.executeUpdate();
+////                                        statement.close();
+////                                        connection.close();
+////                                    } catch (SQLException e) {
+////                                        e.printStackTrace();
+////                                    }
+//
+//
+//
+//                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
+//                                    finish();
+//                                }
+
         });
     }
 
