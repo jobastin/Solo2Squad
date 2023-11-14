@@ -1,18 +1,18 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/navigation_game_selection"
-        android:icon="@drawable/game_selection"
-        android:title="Select Game" />
+        android:id="@+id/navselectgame"
+        android:title="@string/select_game"
+        android:icon="@drawable/selectgame" />
     <item
-        android:id="@+id/navigation_host_game"
-        android:icon="@drawable/host_game"
-        android:title="Host Game" />
+        android:id="@+id/navhostevents"
+        android:title="@string/host_events"
+        android:icon="@drawable/hostevent" />
     <item
-        android:id="@+id/navigation_manage_events"
-        android:icon="@drawable/manage_events"
-        android:title="Manage Events" />
+        android:id="@+id/navmanageevents"
+        android:title="@string/manage_events"
+        android:icon="@drawable/manageevents" />
     <item
-        android:id="@+id/navigation_upcoming_games"
-        android:icon="@drawable/upcoming_games"
-        android:title="Upcoming Games" />
+        android:id="@+id/navupcomingevents"
+        android:title="@string/upcoming_events"
+        android:icon="@drawable/upcomingevents" />
 </menu>

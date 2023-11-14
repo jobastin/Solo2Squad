@@ -33,4 +33,8 @@
 
 
     <string name="solo2squad">Solo2Squad</string>
+    <string name="select_game">Select Game</string>
+    <string name="host_events">Host Events</string>
+    <string name="manage_events">Manage Events</string>
+    <string name="upcoming_events">Upcoming Events</string>
 </resources>

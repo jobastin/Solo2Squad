@@ -2,6 +2,8 @@ package com.example.solo2squad;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
@@ -37,6 +39,7 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Initialize fragments
         gameSelectionFragment = new FragGameSelection();
         hostGameFragment = new FragHostEvents();
@@ -51,16 +54,16 @@ public class DashboardActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.navigation_game_selection) {
+            if (item.getItemId() == R.id.navselectgame) {
                 viewPager.setCurrentItem(0);
                 return true;
-            } else if (item.getItemId() == R.id.navigation_host_game) {
+            } else if (item.getItemId() == R.id.navhostevents) {
                 viewPager.setCurrentItem(1);
                 return true;
-            } else if (item.getItemId() == R.id.navigation_manage_events) {
+            } else if (item.getItemId() == R.id.navmanageevents) {
                 viewPager.setCurrentItem(2);
                 return true;
-            } else if (item.getItemId() == R.id.navigation_upcoming_games) {
+            } else if (item.getItemId() == R.id.navupcomingevents) {
                 viewPager.setCurrentItem(3);
                 return true;
             }
