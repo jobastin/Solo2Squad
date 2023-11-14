@@ -20,20 +20,13 @@
         android:padding="16dp"
         android:layout_below="@+id/searchBar">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/game1"
-            android:text="Game 1"
-            android:textSize="20sp"
-            android:clickable="true"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/game2"
-            android:text="Game 2"
-            android:textSize="20sp"
-            android:clickable="true"/>
+        <ListView
+            android:id="@+id/gamesListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/searchBar"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:padding="16dp" />
     </LinearLayout>
 </RelativeLayout>

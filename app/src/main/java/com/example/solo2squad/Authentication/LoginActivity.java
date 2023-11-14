@@ -281,7 +281,7 @@ public class LoginActivity extends AppCompatActivity {
                                                                 int profileSection = dataSnapshot.child("profileSection").getValue(Integer.class);
                                                                 if (profileSection == 0) {
                                                                     // Redirect to ProfileSection1Activity
-                                                                    startActivity(new Intent(LoginActivity.this, ProfileSection1Activity.class));
+                                                                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                                                 } else if (profileSection == 1) {
                                                                     // Redirect to DashboardActivity
                                                                     startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
