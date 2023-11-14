@@ -18,7 +18,15 @@ public class GoogleSignInUsers {
 
     }
 
-    public GoogleSignInUsers(String userId, String name, String email, String phoneNumber, Address address, String userType, int profileSection, String image,String dob) {
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public GoogleSignInUsers(String userId, String name, String email, String phoneNumber, Address address, String userType, int profileSection, String image, String dob) {
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -27,6 +35,7 @@ public class GoogleSignInUsers {
         this.userType = userType;
         this.profileSection = profileSection;
         this.image = image;
+        this.dob = dob;
     }
 
     public String getUserId() {

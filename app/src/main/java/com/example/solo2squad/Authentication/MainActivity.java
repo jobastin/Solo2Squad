@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.solo2squad.DashboardMain;
 import com.example.solo2squad.databinding.ActivityIntroBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null) {
             // User is already logged in, go to SecondActivity
             Log.e("SIGNUP",String.valueOf(mAuth.getCurrentUser()));
-            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+            Intent intent = new Intent(MainActivity.this, DashboardMain.class);
             startActivity(intent);
             finish(); // Optional: Finish this activity to prevent going back
         } else {

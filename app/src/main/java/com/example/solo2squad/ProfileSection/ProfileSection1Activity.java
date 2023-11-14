@@ -127,8 +127,8 @@ public class ProfileSection1Activity extends AppCompatActivity {
             usersRef.child("address").child("street").setValue(street);
             usersRef.child("address").child("city").setValue(city);
             usersRef.child("address").child("province").setValue(province);
-            usersRef.child("address").child("postalCode").setValue(postalCode);
-            usersRef.child("dateOfBirth").setValue(day + "/" + (month + 1) + "/" + year);
+            usersRef.child("address").child("pin").setValue(postalCode);
+            usersRef.child("dob").setValue(day + "/" + (month + 1) + "/" + year);
             usersRef.child("profileSection").setValue(1);
 
             progressBar.setVisibility(View.GONE);

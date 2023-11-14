@@ -54,6 +54,9 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
     implementation("mysql:mysql-connector-java:5.1.49")
     //implementation files("libs/mysql-connector-java-x.x.x.jar")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
 
 
 //    // https://mvnrepository.com/artifact/mysql/mysql-connector-java

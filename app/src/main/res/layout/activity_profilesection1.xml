@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:text="Basic Details"
+        android:text="Complete your \nProfile"
         android:textColor="#ffffff"
         android:textSize="30sp"
         android:textStyle="bold"
