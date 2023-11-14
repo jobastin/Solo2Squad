@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.solo2squad.DashboardActivity;
+import com.example.solo2squad.DashboardMain;
 import com.example.solo2squad.ProfileSection.ProfileSection1Activity;
 import com.example.solo2squad.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -279,6 +280,7 @@ public class LoginActivity extends AppCompatActivity {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 int profileSection = dataSnapshot.child("profileSection").getValue(Integer.class);
+                                                                Log.e("Login Google", String.valueOf(profileSection));
                                                                 if (profileSection == 0) {
                                                                     // Redirect to ProfileSection1Activity
                                                                     startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
@@ -353,58 +355,179 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuth(String idToken) {
-        AuthCredential credientials = GoogleAuthProvider.getCredential(idToken,null);
+//    private void firebaseAuth(String idToken) {
+//        AuthCredential credientials = GoogleAuthProvider.getCredential(idToken,null);
+//
+//        auth.signInWithCredential(credientials)
+//                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//
+//                        if(task.isSuccessful()){
+//                            FirebaseUser user = auth.getCurrentUser();
+//                            String uid = user.getUid();
+//                            String email = user.getEmail();
+//                            Uri photoUrl = user.getPhotoUrl();
+//                            String name= user.getDisplayName();
+//
+//                            GoogleSignInUsers newUser;
+//                            Address userAddress = new Address("","", "", "");
+//
+//                            if (photoUrl != null) {
+//                                //newUser = new GoogleSignInUsers(uid, email, "photoUrl"); // Empty profile image for now
+//                                newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"photoUrl","");
+//
+//                            } else {
+//                                //newUser = new GoogleSignInUsers(uid, name, "",""); // Empty profile image for now
+//                                newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"","");
+//                            }
+//
+//                            //GoogleSignInUsers users = new GoogleSignInUsers(user.getUid(),user.getDisplayName(),user.getPhotoUrl().toString());
+////                            users.setUserId(user.getUid());
+////                            users.setName(user.getDisplayName());
+////                            users.setImage(user.getPhotoUrl().toString());
+//
+//                            //firebaseDatabase.getReference().child("users").child(user.getUid()).setValue(users);
+//
+////                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+////                            usersRef.child(uid).setValue(newUser);
+//
+//                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+//                            usersRef.child(uid).child("userId").setValue(uid); // Add this line
+//                            usersRef.child(uid).setValue(newUser);
+//
+//
+////                            Intent intent = new Intent(LoginActivity.this, SecondActivity.class);
+////                            startActivity(intent);
+//                            // Check profileSection value
+//                            int profileSection = newUser.getProfileSection();
+//
+//                            if (profileSection == 0) {
+//                                // Redirect to ProfileSection1Activity
+//                                startActivity(new Intent(LoginActivity.this, ProfileSection1Activity.class));
+//                            } else if (profileSection == 1) {
+//                                // Redirect to DashboardActivity
+//                                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+//                            } else {
+//                                // Handle other cases if needed
+//                            }
+//                            finish();
+//                        }
+//                        else{
+//                            Toast.makeText(LoginActivity.this,"error",Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//                });
+//    }
 
-        auth.signInWithCredential(credientials)
+
+    private void firebaseAuth(String idToken) {
+        AuthCredential credentials = GoogleAuthProvider.getCredential(idToken, null);
+
+        auth.signInWithCredential(credentials)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
-                            String uid = user.getUid();
-                            String email = user.getEmail();
-                            Uri photoUrl = user.getPhotoUrl();
-                            String name= user.getDisplayName();
+                            if (user != null) {
+                                boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
 
-                            GoogleSignInUsers newUser;
-                            Address userAddress = new Address("","", "", "");
+                                if (isNewUser) {
 
-                            if (photoUrl != null) {
-                                //newUser = new GoogleSignInUsers(uid, email, "photoUrl"); // Empty profile image for now
-                                newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"photoUrl","");
 
-                            } else {
-                                //newUser = new GoogleSignInUsers(uid, name, "",""); // Empty profile image for now
-                                newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"","");
-                            }
 
-                            //GoogleSignInUsers users = new GoogleSignInUsers(user.getUid(),user.getDisplayName(),user.getPhotoUrl().toString());
+                                    String uid = user.getUid();
+                                    String email = user.getEmail();
+                                    Uri photoUrl = user.getPhotoUrl();
+                                    String name= user.getDisplayName();
+
+                                    GoogleSignInUsers newUser;
+                                    Address userAddress = new Address("","", "", "");
+
+                                    if (photoUrl != null) {
+                                        //newUser = new GoogleSignInUsers(uid, email, "photoUrl"); // Empty profile image for now
+                                        newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"photoUrl","");
+
+                                    } else {
+                                        //newUser = new GoogleSignInUsers(uid, name, "",""); // Empty profile image for now
+                                        newUser = new GoogleSignInUsers(uid,name,email,"",userAddress,"user",0,"","");
+                                    }
+
+                                    //GoogleSignInUsers users = new GoogleSignInUsers(user.getUid(),user.getDisplayName(),user.getPhotoUrl().toString());
 //                            users.setUserId(user.getUid());
 //                            users.setName(user.getDisplayName());
 //                            users.setImage(user.getPhotoUrl().toString());
 
-                            //firebaseDatabase.getReference().child("users").child(user.getUid()).setValue(users);
+                                    //firebaseDatabase.getReference().child("users").child(user.getUid()).setValue(users);
 
 //                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 //                            usersRef.child(uid).setValue(newUser);
 
-                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
-                            usersRef.child(uid).child("userId").setValue(uid); // Add this line
-                            usersRef.child(uid).setValue(newUser);
+                                    DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+                                    usersRef.child(uid).child("userId").setValue(uid); // Add this line
+                                    usersRef.child(uid).setValue(newUser);
 
 
-                            Intent intent = new Intent(LoginActivity.this, SecondActivity.class);
-                            startActivity(intent);
-                            finish();
+//                            Intent intent = new Intent(LoginActivity.this, SecondActivity.class);
+//                            startActivity(intent);
+                                    // Check profileSection value
+                                    int profileSection = newUser.getProfileSection();
+
+                                    if (profileSection == 0) {
+                                        // Redirect to ProfileSection1Activity
+                                        startActivity(new Intent(LoginActivity.this, ProfileSection1Activity.class));
+                                    } else if (profileSection == 1) {
+                                        // Redirect to DashboardActivity
+                                        startActivity(new Intent(LoginActivity.this, DashboardMain.class));
+                                    } else {
+                                        // Handle other cases if needed
+                                    }
+                                    finish();
+
+                                } else {
+                                    // The user is an existing user
+                                    // Check the profileSection variable in the database
+                                    checkProfileSection(user.getUid());
+                                }
+
+                                // Continue with the rest of your code
+                            }
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
                         }
-                        else{
-                            Toast.makeText(LoginActivity.this,"error",Toast.LENGTH_SHORT).show();
-                        }
-
                     }
                 });
+    }
+
+    private void checkProfileSection(String uid) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // User exists in the database
+                    int profileSection = snapshot.child("profileSection").getValue(Integer.class);
+
+                    if (profileSection == 0) {
+                        // Redirect to ProfileSection1Activity
+                        startActivity(new Intent(LoginActivity.this, ProfileSection1Activity.class));
+                    } else if (profileSection == 1) {
+                        // Redirect to DashboardActivity
+                        startActivity(new Intent(LoginActivity.this, DashboardMain.class));
+                    } else {
+                        // Handle other cases if needed
+                    }
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LoginActivity.this, "Database error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //        signupRedirectText.setOnClickListener(new View.OnClickListener() {

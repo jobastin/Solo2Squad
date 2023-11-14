@@ -28,7 +28,7 @@
         app:srcCompat="@drawable/bottom_white" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewCalander"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -46,8 +46,8 @@
         android:layout_height="wrap_content"
         android:text="Squad up people, play together, find \nteam mates"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="@+id/textViewCalander"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCalander" />
 
     <TextView
         android:id="@+id/getStartedbtn"
