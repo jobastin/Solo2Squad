@@ -88,14 +88,14 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
         View profileOverlay = findViewById(R.id.profile_overlay);
-        View profileButton = findViewById(R.id.profileButton);
+        //View profileButton = findViewById(R.id.profileButton);
 
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleProfileOverlay(profileOverlay);
-            }
-        });
+//        profileButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                toggleProfileOverlay(profileOverlay);
+//            }
+//        });
     }
 
     private void toggleProfileOverlay(View profileOverlay) {
