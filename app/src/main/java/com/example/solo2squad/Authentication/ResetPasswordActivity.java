@@ -1,11 +1,13 @@
 package com.example.solo2squad.Authentication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         inputEmail = (EditText) findViewById(R.id.email);
         btnReset = (Button) findViewById(R.id.btn_reset_password);
+
+        TextView btnSignup = findViewById(R.id.btnSignup);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -67,6 +71,15 @@ public class ResetPasswordActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                             }
                         });
+            }
+        });
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle the click event, redirect to another activity
+                Intent intent = new Intent(ResetPasswordActivity.this, SignupActivity.class);
+                startActivity(intent);
             }
         });
     }
