@@ -1,18 +1,35 @@
 package com.example.solo2squad;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import com.example.solo2squad.Authentication.LoginActivity;
+import com.example.solo2squad.Authentication.MainActivity;
+import com.example.solo2squad.ProfileSection.ProfileUtil;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
@@ -29,6 +46,12 @@ public class DashboardActivity extends AppCompatActivity {
     private FragManageEvents manageEventsFragment;
     private FragMySchedules upcomingGamesFragment;
 
+    private TextView textViewName, textViewEmail, textViewPhoneNumber, textViewDOB, textViewAddress;
+    private ImageView imageViewProfile;
+
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
+
     private ImageButton profileButton;
     private View profileOverlay;
     private boolean isProfileVisible = false;
@@ -40,6 +63,15 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        gsc = GoogleSignIn.getClient(this, gso);
+
+
+
         // Initialize fragments
         gameSelectionFragment = new FragGameSelection();
         hostGameFragment = new FragHostEvents();
@@ -49,6 +81,15 @@ public class DashboardActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager = findViewById(R.id.fragment_container);
         tabLayout = findViewById(R.id.tab_layout);
+
+        textViewName = findViewById(R.id.textView4);
+        textViewEmail = findViewById(R.id.textView5);
+        textViewPhoneNumber = findViewById(R.id.textViewPhone);
+        textViewDOB = findViewById(R.id.textViewDOB);
+        textViewAddress = findViewById(R.id.textViewAddress);
+        imageViewProfile = findViewById(R.id.imageView4);
+        ConstraintLayout logoutLayout = findViewById(R.id.LogoutLayout);
+        ConstraintLayout backButton = findViewById(R.id.backButton);
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
@@ -93,9 +134,58 @@ public class DashboardActivity extends AppCompatActivity {
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 toggleProfileOverlay(profileOverlay);
+                if (isProfileVisible) {
+                    ProfileUtil.fetchDataFromFirebase(DashboardActivity.this, textViewName, textViewEmail, textViewPhoneNumber, textViewDOB, textViewAddress, imageViewProfile);
+                }
             }
         });
+
+        logoutLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+
+            private void signOut() {
+                gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // Sign out successful, navigate to the LoginActivity and clear the activity stack
+                            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        } else {
+                            // Handle sign-out failure
+                            Toast.makeText(DashboardActivity.this, "Sign out failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle back button click here
+                onBackPressed(); // This will simulate the system back button press
+            }
+        });
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        // Add your custom back button handling
+        // For example, hide the profile overlay instead of finishing the activity
+        if (isProfileVisible) {
+            toggleProfileOverlay(profileOverlay);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void toggleProfileOverlay(View profileOverlay) {
@@ -115,6 +205,7 @@ public class DashboardActivity extends AppCompatActivity {
         profileOverlay.setVisibility(isProfileVisible ? View.GONE : View.VISIBLE);
         isProfileVisible = !isProfileVisible;
     }
+
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());

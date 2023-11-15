@@ -58,11 +58,7 @@ public class Activity_profile_login extends AppCompatActivity {
 
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_login);
-
+    protected void profilegetdata() {
         auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
@@ -123,7 +119,7 @@ public class Activity_profile_login extends AppCompatActivity {
         }
     }
 
-    private void fetchDataFromFirebase() {
+    public void fetchDataFromFirebase() {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
