@@ -1,87 +1,142 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="16dp">
+    android:layout_marginBottom="100dp">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:layout_marginTop="50dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/txthost"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="monospace"
+        android:padding="25dp"
         android:text="Host an Event"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:id="@+id/textViewTitle"/>
+        android:textSize="20sp"
+        android:textStyle="bold">
 
+    </TextView>
+    <!-- Sports Category Spinner -->
     <Spinner
+        android:id="@+id/spinnerSportsCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewTitle"
-        android:id="@+id/gameTypeSpinner"
-        android:layout_marginTop="16dp"
-        android:hint="Select Game Type"
+        android:layout_below="@id/txthost"
+        android:layout_marginBottom="8dp"
         />
 
+    <!-- Sports Type Spinner -->
+    <Spinner
+        android:id="@+id/spinnerSportsType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinnerSportsCategory"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+         />
+
+    <!-- Location EditText -->
     <EditText
+        android:id="@+id/editTextLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/gameTypeSpinner"
-        android:layout_marginTop="16dp"
-        android:id="@+id/locationEditText"
-        android:hint="Location (Select from Maps)"
-        />
+        android:layout_below="@id/spinnerSportsType"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:hint="Location" />
 
-    <Button
+    <TextView
+        android:id="@+id/textViewTimeError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/locationEditText"
-        android:layout_marginTop="16dp"
-        android:id="@+id/mapButton"
-        android:text="Select from Maps"
-        />
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_below="@id/editTextLocation"
+        android:visibility="gone" />
 
+    <!-- Time Picker -->
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="343dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTimeError"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Date Picker -->
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="365dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timePicker"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Description EditText -->
     <EditText
+        android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mapButton"
-        android:layout_marginTop="16dp"
-        android:id="@+id/dateAndTimeEditText"
-        android:hint="Date and Time"
-        />
+        android:layout_below="@id/datePicker"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:hint="Description" />
 
+    <!-- Slots Available EditText -->
     <EditText
+        android:id="@+id/editTextSlotsAvailable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dateAndTimeEditText"
-        android:layout_marginTop="16dp"
-        android:id="@+id/slotsEditText"
-        android:hint="Number of Slots"
-        />
+        android:layout_below="@id/editTextDescription"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:inputType="number"
+        android:hint="Slots Available" />
 
+    <!-- Free Booking CheckBox -->
+    <CheckBox
+        android:id="@+id/checkBoxFreeBooking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextSlotsAvailable"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Free Booking" />
+
+    <!-- Price Per Slot EditText -->
     <EditText
+        android:id="@+id/editTextPricePerSlot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/slotsEditText"
-        android:layout_marginTop="16dp"
-        android:id="@+id/priceEditText"
-        android:hint="Price per Person"
-        />
+        android:layout_below="@id/checkBoxFreeBooking"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:inputType="numberDecimal"
+        android:hint="Price Per Slot"
+         />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/priceEditText"
-        android:layout_marginTop="16dp"
-        android:id="@+id/descriptionEditText"
-        android:hint="Event Description"
-        />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/descriptionEditText"
-        android:layout_marginTop="16dp"
-        android:id="@+id/submitButton"
-        android:text="Submit"
-        />
+<!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editTextPricePerSlot"
+            android:layout_marginTop="16dp"
+            android:text="Submit" />
 </RelativeLayout>
+
+</ScrollView>

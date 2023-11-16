@@ -480,7 +480,7 @@ public class LoginActivity extends AppCompatActivity {
                                         startActivity(new Intent(LoginActivity.this, ProfileSection1Activity.class));
                                     } else if (profileSection == 1) {
                                         // Redirect to DashboardActivity
-                                        startActivity(new Intent(LoginActivity.this, DashboardMain.class));
+                                        startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                     } else {
                                         // Handle other cases if needed
                                     }
@@ -515,7 +515,7 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(new Intent(LoginActivity.this, ProfileSection1Activity.class));
                     } else if (profileSection == 1) {
                         // Redirect to DashboardActivity
-                        startActivity(new Intent(LoginActivity.this, DashboardMain.class));
+                        startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                     } else {
                         // Handle other cases if needed
                     }
