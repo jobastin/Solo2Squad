@@ -48,12 +48,13 @@ public class DashboardActivity extends AppCompatActivity {
 
     private TextView textViewName, textViewEmail, textViewPhoneNumber, textViewDOB, textViewAddress;
     private ImageView imageViewProfile;
+    private View profileOverlay;
 
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
 
     private ImageButton profileButton;
-    private View profileOverlay;
+ 
     private boolean isProfileVisible = false;
 
     @SuppressLint("MissingInflatedId")
@@ -90,6 +91,10 @@ public class DashboardActivity extends AppCompatActivity {
         imageViewProfile = findViewById(R.id.imageView4);
         ConstraintLayout logoutLayout = findViewById(R.id.LogoutLayout);
         ConstraintLayout backButton = findViewById(R.id.backButton);
+
+
+        profileOverlay = findViewById(R.id.profile_overlay);
+        View profileButton = findViewById(R.id.profileButton);
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
@@ -128,8 +133,6 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        View profileOverlay = findViewById(R.id.profile_overlay);
-        View profileButton = findViewById(R.id.profileButton);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
