@@ -46,8 +46,8 @@ public class gameselectionadapter extends BaseAdapter {
         TextView slotsTextView = convertView.findViewById(R.id.slotsTextView);
         Button actionButton = convertView.findViewById(R.id.actionButton);
 
-        gameTypeTextView.setText("Game Type: " + event.getGameType());
-        slotsTextView.setText("Slots: " + event.getSlots());
+//        gameTypeTextView.setText("Game Type: " + event.getGameType());
+//        slotsTextView.setText("Slots: " + event.getSlots());
 
         // Handle button click here
         actionButton.setOnClickListener(new View.OnClickListener() {
