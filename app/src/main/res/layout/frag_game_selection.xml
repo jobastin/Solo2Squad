@@ -27,6 +27,6 @@
             android:layout_below="@+id/searchBar"
             android:divider="@android:color/darker_gray"
             android:dividerHeight="1dp"
-            android:padding="16dp" />
+            android:padding="16dp"/>
     </LinearLayout>
 </RelativeLayout>
