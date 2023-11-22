@@ -136,6 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/editTextPricePerSlot"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="50dp"
             android:text="Submit" />
 </RelativeLayout>
 

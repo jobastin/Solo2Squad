@@ -32,6 +32,7 @@
         <activity android:name=".Authentication.ResetPasswordActivity" />
         <activity android:name=".Authentication.SecondActivity" />
         <activity android:name=".ProfileSection.ProfileSection1Activity" />
+        <activity android:name=".ProfileSection.gameselectiondetails" />
         <activity android:name=".DashboardMain" />
         <activity
             android:name=".DashboardActivity"

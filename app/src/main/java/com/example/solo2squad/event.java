@@ -14,6 +14,8 @@ public class event {
     private int activeStatus;
     private String payment_status;
 
+    private String key;
+
     public event(String userID, String sportsCategory, String sportsType, String location, String description, String time, int slotsAvailable, boolean freeBooking, double pricePerSlot, long timestamp, int activeStatus, String payment_status) {
         this.userID = userID;
         this.sportsCategory = sportsCategory;
@@ -127,5 +129,13 @@ public class event {
 
     public void setPayment_status(String payment_status) {
         this.payment_status = payment_status;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

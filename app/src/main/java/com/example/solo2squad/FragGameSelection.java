@@ -27,7 +27,7 @@ public class FragGameSelection extends Fragment {
         View view = inflater.inflate(R.layout.frag_game_selection, container, false);
 
         gamesListView = view.findViewById(R.id.gamesListView);
-        databaseReference = FirebaseDatabase.getInstance().getReference("events");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Hosted_events");
 
         // Fetch data from Firebase and populate the ListView
         fetchDataFromFirebase();
@@ -40,9 +40,11 @@ public class FragGameSelection extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<event> eventList = new ArrayList<>();
+                List<String> eventKeys = new ArrayList<>();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     // Assuming you have an "event" class with appropriate constructor
+                    String key = snapshot.getKey();
                     event event = snapshot.getValue(event.class);
                     if (event != null) {
                         eventList.add(event);
@@ -50,7 +52,7 @@ public class FragGameSelection extends Fragment {
                 }
 
                 // Create the custom adapter
-                adapter = new gameselectionadapter(requireContext(), eventList);
+                adapter = new gameselectionadapter(requireContext(), eventList, eventKeys);
 
                 // Set the adapter to the ListView
                 gamesListView.setAdapter(adapter);

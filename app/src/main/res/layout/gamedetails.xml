@@ -1,0 +1,70 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/sportsTypeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/sportsCategoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/sportsTypeTextView"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/sportsCategoryTextView"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/locationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/descriptionTextView"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/slotsAvailableTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/locationTextView"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/pricePerSlotTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/slotsAvailableTextView"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/numberOfSlotsEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter number of slots"
+        android:inputType="number"
+        android:layout_below="@id/pricePerSlotTextView"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/confirmBookingButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm Booking"
+        android:layout_below="@id/numberOfSlotsEditText"
+        android:layout_marginTop="16dp"/>
+
+</RelativeLayout>
