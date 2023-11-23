@@ -48,6 +48,7 @@ public class FragGameSelection extends Fragment {
                     event event = snapshot.getValue(event.class);
                     if (event != null) {
                         eventList.add(event);
+                        eventKeys.add(key);
                     }
                 }
 
