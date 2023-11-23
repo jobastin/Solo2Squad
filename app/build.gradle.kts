@@ -58,13 +58,12 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
 
-
-//    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-//    implementation("mysql:mysql-connector-java:8.0.28")
-
-    dependencies {
-        implementation("software.aws.rds:aws-mysql-jdbc:1.1.11")
-    }
-
+    //Test cases imports
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-accessibility:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-web:3.4.0")
+    implementation("software.aws.rds:aws-mysql-jdbc:1.1.11")
 }
 
