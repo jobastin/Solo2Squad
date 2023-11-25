@@ -23,7 +23,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:background="@color/intro_green">
+            android:background="#4C39CC">
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:text="Solo 2 Squad"
             android:textAlignment="center"
-            android:textColor="@color/intro_green"
+            android:textColor="#4C39CC"
             android:textSize="34sp"
             android:textStyle="bold" />
 
@@ -148,7 +148,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:text="Change Password"
-                        android:textColor="@color/intro_green"
+                        android:textColor="#4C39CC"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -190,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="Logout"
-                android:textColor="@color/intro_green"
+                android:textColor="#4C39CC"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"

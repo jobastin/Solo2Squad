@@ -56,34 +56,14 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     ProgressDialog progressDialog;
     GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
 
     private LinearLayout googleLoginButton;
 
-    //for unti testing
-    // Setter method to inject FirebaseAuth instance
-    public void setAuth(FirebaseAuth auth) {
-        this.auth = auth;
-    }
-
-    public void setGsc(GoogleSignInClient gsc) {
-        this.gsc = gsc;
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        // Add your code to perform actions when the activity is restarting
-
-        // For example, sign out the user if you are using Firebase Authentication
-        signOut();
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         auth = FirebaseAuth.getInstance();
-
 
         //Google sing in button variable declaration
         firebaseDatabase =FirebaseDatabase.getInstance();
@@ -126,7 +106,6 @@ public class LoginActivity extends AppCompatActivity {
         googleLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
                 signIn();
             }
 
@@ -180,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
                                                                 Log.e("Login Google", String.valueOf(profileSection));
                                                                 if (profileSection == 0) {
                                                                     // Redirect to ProfileSection1Activity
-                                                                    startActivity(new Intent(LoginActivity.this, ProfileSection1Activity.class));
+                                                                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                                                 } else if (profileSection == 1) {
                                                                     // Redirect to DashboardActivity
                                                                     startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
@@ -253,15 +232,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void signOut(){
-        gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(Task<Void> task) {
-                finish();
-                //startActivity(new Intent(SecondActivity.this, MainActivity.class));
-            }
-        });
-    }
+
 
     private void firebaseAuth(String idToken) {
         AuthCredential credentials = GoogleAuthProvider.getCredential(idToken, null);
