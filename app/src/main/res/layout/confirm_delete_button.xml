@@ -1,0 +1,17 @@
+<!-- confirmation_dialog.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="150dp"
+    android:orientation="vertical"
+    android:padding="50dp"
+    android:layout_marginLeft="30dp">
+
+    <!-- Other necessary elements or text can be added here -->
+
+    <Button
+        android:id="@+id/confirmDeleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm Delete"/>
+</LinearLayout>

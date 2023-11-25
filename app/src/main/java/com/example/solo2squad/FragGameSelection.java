@@ -8,6 +8,8 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,9 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FragGameSelection extends Fragment {
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    FirebaseUser currentUser = auth.getCurrentUser();
     private ListView gamesListView;
     private gameselectionadapter adapter;
     private DatabaseReference databaseReference;
+    private String currentUserID = currentUser.getUid();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,7 +51,7 @@ public class FragGameSelection extends Fragment {
                     // Assuming you have an "event" class with appropriate constructor
                     String key = snapshot.getKey();
                     event event = snapshot.getValue(event.class);
-                    if (event != null) {
+                    if (event != null && !event.getUserID().equals(currentUserID)) {
                         eventList.add(event);
                         eventKeys.add(key);
                     }
