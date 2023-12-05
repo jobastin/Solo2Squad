@@ -24,4 +24,32 @@
         <item name="android:theme">@color/colorDarkBlue</item>
     </style>
 
+    <style name="PaymentField">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <!-- Add more styling attributes as needed -->
+    </style>
+
+    <style name="TextLargeGameSelection">
+        <item name="android:textSize">18sp</item>
+        <!-- Add other attributes as needed -->
+    </style>
+
+    <style name="TextMediumGameSelection">
+        <item name="android:textSize">16sp</item>
+        <!-- Add other attributes as needed -->
+    </style>
+
+    <style name="EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <!-- Add other attributes as needed -->
+    </style>
+
+    <style name="ButtonPrimaryGameSelection">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <!-- Add other attributes as needed -->
+    </style>
+
 </resources>

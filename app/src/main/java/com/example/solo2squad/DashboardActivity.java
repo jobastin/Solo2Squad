@@ -32,6 +32,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +57,8 @@ public class DashboardActivity extends AppCompatActivity {
     GoogleSignInClient gsc;
 
     private ImageButton profileButton;
- 
+
+    private TextView textViewUserName;
     private boolean isProfileVisible = false;
 
     @SuppressLint("MissingInflatedId")
@@ -62,6 +66,11 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textViewUserName = findViewById(R.id.textView7);
+
+
+        setUserName();
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -177,6 +186,25 @@ public class DashboardActivity extends AppCompatActivity {
                 onBackPressed(); // This will simulate the system back button press
             }
         });
+    }
+
+    private void setUserName() {
+        // Get the current FirebaseUser
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser != null) {
+            // Check if the user has a display name
+            String displayName = currentUser.getDisplayName();
+
+            if (displayName != null && !displayName.isEmpty()) {
+                // Set the user name in the TextView
+                textViewUserName.setText("Hi, " + displayName);
+            } else {
+                // If the user doesn't have a display name, you can set a default or prompt the user to set one.
+                // Here, we set a default name.
+                textViewUserName.setText("Hi, User");
+            }
+        }
     }
 
 

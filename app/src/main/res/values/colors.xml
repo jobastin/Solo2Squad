@@ -22,4 +22,6 @@
     <color name="colorCoinBackground">#01242b</color>
 
     <color name="background_green">#dbfd9e</color>
+    <color name="colorPrimaryGame">#3F51B5</color>
+    <color name="colorPrimaryDarkGame">#303F9F</color>
 </resources>

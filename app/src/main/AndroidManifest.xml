@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Solo2Squad"
         tools:targetApi="31">
         <activity
+            android:name=".HostConfirmationPayment"
+            android:exported="false" />
+        <activity
             android:name=".Activity_profile_login"
             android:exported="false" />
         <activity
@@ -39,7 +42,7 @@
             android:name=".DashboardActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
     </application>
 
 </manifest>

@@ -1,28 +1,19 @@
-package com.example.solo2squad.ProfileSection;
+package com.example.solo2squad;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.TextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.solo2squad.DashboardActivity;
-import com.example.solo2squad.EventPayment;
-import com.example.solo2squad.R;
-import com.example.solo2squad.StripeConfig;
-import com.example.solo2squad.event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.paymentsheet.PaymentSheet;
 import com.stripe.android.paymentsheet.PaymentSheetResult;
@@ -32,6 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -41,22 +35,20 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class gameselectiondetails extends AppCompatActivity {
+public class HostConfirmationPayment extends AppCompatActivity {
 
-    private TextView sportsTypeTextView;
-    private TextView sportsCategoryTextView;
-    private TextView descriptionTextView;
-    private TextView locationTextView;
-    private TextView slotsAvailableTextView;
-    private TextView pricePerSlotTextView;
-    private EditText numberOfSlotsEditText;
-    private Button confirmBookingButton;
-
-    private DatabaseReference databaseReference;
-    private String uniqueId;
-
-    int priceFirebase;
-
+    private TextView textViewUserID;
+    private TextView textViewSportsCategory;
+    private TextView textViewSportsType;
+    private TextView textViewLocation;
+    private TextView textViewDescription;
+    private TextView textViewTotalSlots;
+    private TextView textViewSlotsAvailable;
+    private TextView textViewFreeBooking;
+    private TextView textViewPricePerSlot;
+    private TextView textViewTimestamp;
+    private TextView textViewActiveStatus;
+    private TextView textViewPaymentStatus;
 
     private FirebaseAuth auth;
 
@@ -68,73 +60,112 @@ public class gameselectiondetails extends AppCompatActivity {
     private String customerId;
     private String ephemeralKey;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gamedetails);
+        setContentView(R.layout.activity_host_confirmation_payment);
 
-        uniqueId = getIntent().getStringExtra("eventKey");
+        // Initialize your TextViews
+        textViewUserID = findViewById(R.id.textViewUserID);
+        textViewSportsCategory = findViewById(R.id.textViewSportsCategory);
+        textViewSportsType = findViewById(R.id.textViewSportsType);
+        textViewLocation = findViewById(R.id.textViewLocation);
+        textViewDescription = findViewById(R.id.textViewDescription);
+        textViewTotalSlots = findViewById(R.id.textViewTotalSlots);
+        textViewSlotsAvailable = findViewById(R.id.textViewSlotsAvailable);
+        textViewFreeBooking = findViewById(R.id.textViewFreeBooking);
+        textViewPricePerSlot = findViewById(R.id.textViewPricePerSlot);
+        textViewTimestamp = findViewById(R.id.textViewTimestamp);
+        textViewActiveStatus = findViewById(R.id.textViewActiveStatus);
+        textViewPaymentStatus = findViewById(R.id.textViewPaymentStatus);
 
-        // Initialize views
-        sportsTypeTextView = findViewById(R.id.sportsTypeTextView);
-        sportsCategoryTextView = findViewById(R.id.sportsCategoryTextView);
-        descriptionTextView = findViewById(R.id.descriptionTextView);
-        locationTextView = findViewById(R.id.locationTextView);
-        slotsAvailableTextView = findViewById(R.id.slotsAvailableTextView);
-        pricePerSlotTextView = findViewById(R.id.pricePerSlotTextView);
-        numberOfSlotsEditText = findViewById(R.id.numberOfSlotsEditText);
-        confirmBookingButton = findViewById(R.id.confirmBookingButton);
+        // Retrieve data from Intent
+        Intent intent = getIntent();
+        //String eventKey = intent.getStringExtra("eventKey");
 
         auth = FirebaseAuth.getInstance();
 
         createStripeCustomer();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
 
-        databaseReference.child(uniqueId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // Get the event object based on the unique ID
-                    event eventDetails = dataSnapshot.getValue(event.class);
 
-                    priceFirebase= (int) eventDetails.getPricePerSlot();
+        // Retrieve more data as needed
+        String userID = intent.getStringExtra("userID");
+        String sportsCategory = intent.getStringExtra("sportsCategory");
+        String sportsType = intent.getStringExtra("sportsType");
+        String location = intent.getStringExtra("location");
+        String description = intent.getStringExtra("description");
+        int totalSlots = intent.getIntExtra("totalSlots", 0);
+        int slotsAvailable = intent.getIntExtra("slotsAvailable", 0);
+        boolean freeBooking = intent.getBooleanExtra("freeBooking", false);
+        double pricePerSlot = intent.getDoubleExtra("pricePerSlot", 0.0);
+        long timestamp = intent.getLongExtra("timestamp", 0);
+        int activeStatus = intent.getIntExtra("activeStatus", 0);
+        String paymentStatus = intent.getStringExtra("paymentStatus");
 
-                    if (eventDetails != null) {
-                        // Set values from eventDetails object to TextViews
-                        sportsTypeTextView.setText(eventDetails.getSportsType());
-                        sportsCategoryTextView.setText(eventDetails.getSportsCategory());
-                        descriptionTextView.setText(eventDetails.getDescription());
-                        locationTextView.setText(eventDetails.getLocation());
-                        slotsAvailableTextView.setText("Slots Available: " + eventDetails.getSlotsAvailable());
-                        pricePerSlotTextView.setText("Price per Slot: $" + eventDetails.getPricePerSlot());
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle errors here
-            }
-        });
+        Log.e("HostConfirmationPayment", "User ID: " + userID);
+        Log.e("HostConfirmationPayment", "Sports Category: " + sportsCategory);
+        Log.e("HostConfirmationPayment", "Sports Type: " + sportsType);
+        Log.e("HostConfirmationPayment", "Location: " + location);
+        Log.e("HostConfirmationPayment", "Description: " + description);
+        Log.e("HostConfirmationPayment", "Total Slots: " + totalSlots);
+        Log.e("HostConfirmationPayment", "Slots Available: " + slotsAvailable);
+        Log.e("HostConfirmationPayment", "Free Booking: " + freeBooking);
+        Log.e("HostConfirmationPayment", "Price Per Slot: " + pricePerSlot);
+        Log.e("HostConfirmationPayment", "Timestamp: " + timestamp);
+        Log.e("HostConfirmationPayment", "Active Status: " + activeStatus);
+        Log.e("HostConfirmationPayment", "Payment Status: " + paymentStatus);
+
+        // Set values to TextViews
+        textViewUserID.setText("User ID: " + userID);
+        textViewSportsCategory.setText("Sports Category: " + sportsCategory);
+        textViewSportsType.setText("Sports Type: " + sportsType);
+        textViewLocation.setText("Location: " + location);
+        textViewDescription.setText("Description: " + description);
+        textViewTotalSlots.setText("Total Slots: " + totalSlots);
+        textViewSlotsAvailable.setText("Slots Available: " + slotsAvailable);
+        textViewFreeBooking.setText("Free Booking: " + (freeBooking ? "Yes" : "No"));
+        textViewPricePerSlot.setText("Price Per Slot: " + pricePerSlot);
+        textViewTimestamp.setText("Timestamp: " + timestamp);
+        textViewActiveStatus.setText("Active Status: " + activeStatus);
+        textViewPaymentStatus.setText("Payment Status: " + paymentStatus);
+
+        // Use the retrieved data as needed
+        // For example, set text in TextViews
+        TextView textViewUserID = findViewById(R.id.textViewUserID);
+        textViewUserID.setText("User ID: " + userID);
+
+        TextView textViewSportsCategory = findViewById(R.id.textViewSportsCategory);
+        textViewSportsCategory.setText("Sports Category: " + sportsCategory);
+
+        // Continue for other data...
+
+        // Example for displaying timestamp in a human-readable format
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        String formattedDate = sdf.format(new Date(timestamp));
+        TextView textViewTimestamp = findViewById(R.id.textViewTimestamp);
+        textViewTimestamp.setText("Timestamp: " + formattedDate);
 
         paymentSheet=new PaymentSheet(this,paymentSheetResult -> {
             handlePaymentSheetResult(paymentSheetResult);
         });
 
-        // Handle Confirm Booking button click
-        confirmBookingButton.setOnClickListener(view -> {
-            String numberOfSlots = numberOfSlotsEditText.getText().toString();
-            int numberOfSlots1 = Integer.parseInt(numberOfSlots);
-            priceFirebase = priceFirebase * numberOfSlots1;
 
+        Button paymentButton = findViewById(R.id.paymentButton);
 
-            PaymentFlow();
+        // Set an onClickListener for the button
+        paymentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PaymentFlow();
+
+            }
         });
 
         PaymentConfiguration.init(this, pKey);
+
+
     }
 
     //creating Stripe customer
@@ -245,10 +276,10 @@ public class gameselectiondetails extends AppCompatActivity {
 //        boolean freeBooking = checkBoxFreeBooking.isChecked();
 //        double amount = freeBooking ? 0.0 : Double.parseDouble(editTextPricePerSlot.getText().toString().trim());
 //        amount=(int)amount*100;
-        int amount = priceFirebase;
+        int amount = 1000;
         RequestBody requestBody = new FormBody.Builder()
                 .add("customer", customerId)
-                .add("amount", String.valueOf(amount)+"00")
+                .add("amount", String.valueOf(amount))
                 .add("currency", "cad")  // Replace with your desired currency
                 .add("automatic_payment_methods[enabled]", "true")
                 .build();
@@ -316,12 +347,39 @@ public class gameselectiondetails extends AppCompatActivity {
             Log.e("Failed","handle payment");
         } else if (paymentSheetResult instanceof PaymentSheetResult.Completed) {
 
-            Toast.makeText(this, "Booking Confirmed", Toast.LENGTH_SHORT).show();
+            // Retrieve more data as needed
+
+            Intent intent = getIntent();
+            String userID = intent.getStringExtra("userID");
+            String sportsCategory = intent.getStringExtra("sportsCategory");
+            String sportsType = intent.getStringExtra("sportsType");
+            String location = intent.getStringExtra("location");
+            String description = intent.getStringExtra("description");
+            int totalSlots = intent.getIntExtra("totalSlots", 0);
+            int slotsAvailable = intent.getIntExtra("slotsAvailable", 0);
+            boolean freeBooking = intent.getBooleanExtra("freeBooking", false);
+            double pricePerSlot = intent.getDoubleExtra("pricePerSlot", 0.0);
+            long timestamp = intent.getLongExtra("timestamp", 0);
+            int activeStatus = intent.getIntExtra("activeStatus", 0);
+            String paymentStatus = intent.getStringExtra("paymentStatus");
+            long currentTimestamp = System.currentTimeMillis();
+            EventPayment payment = new EventPayment(customerId, ephemeralKey,pricePerSlot, currentTimestamp, 1);
+            event newEvent = new event(userID, sportsCategory, sportsType, location, description, String.valueOf(timestamp), totalSlots,
+                    slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus,"Done", payment);
+
+
+            DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
+
+            String eventKey = hostedEventsRef.push().getKey();
+            hostedEventsRef.child(eventKey).setValue(newEvent);
+
+
+            Toast.makeText(this, "Payment Success", Toast.LENGTH_SHORT).show();
 
             Log.e("Complete","handle payment");
             startActivity(new Intent(this, DashboardActivity.class));
         }
     }
-    }
 
+}
 

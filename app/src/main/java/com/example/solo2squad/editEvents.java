@@ -102,7 +102,7 @@ public class editEvents extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     // Handle errors
                 }
-                });
+            });
 
 
             checkBoxFreeBooking.setOnClickListener(new View.OnClickListener() {
@@ -304,44 +304,47 @@ public class editEvents extends AppCompatActivity {
     private void updateEvent() {
 
         try {
-        if (validateFields() && isFutureTimeSelected()) {
-            // Retrieve the updated values from the views
-            String location = editTextLocation.getText().toString().trim();
-            String description = editTextDescription.getText().toString().trim();
-            int slotsAvailable = Integer.parseInt(editTextSlotsAvailable.getText().toString().trim());
-            boolean freeBooking = checkBoxFreeBooking.isChecked();
-            double pricePerSlot = freeBooking ? 0.0 : Double.parseDouble(editTextPricePerSlot.getText().toString().trim());
+            if (validateFields() && isFutureTimeSelected()) {
+                // Retrieve the updated values from the views
+                String location = editTextLocation.getText().toString().trim();
+                String description = editTextDescription.getText().toString().trim();
+                int slotsAvailable = Integer.parseInt(editTextSlotsAvailable.getText().toString().trim());
+                boolean freeBooking = checkBoxFreeBooking.isChecked();
+                double pricePerSlot = freeBooking ? 0.0 : Double.parseDouble(editTextPricePerSlot.getText().toString().trim());
 
-            // Get the selected date and time from Date and Time Pickers
-            int year = datePicker.getYear();
-            int month = datePicker.getMonth();
-            int day = datePicker.getDayOfMonth();
-            int hour = timePicker.getHour();
-            int minute = timePicker.getMinute();
+                // Get the selected date and time from Date and Time Pickers
+                int year = datePicker.getYear();
+                int month = datePicker.getMonth();
+                int day = datePicker.getDayOfMonth();
+                int hour = timePicker.getHour();
+                int minute = timePicker.getMinute();
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, day, hour, minute);
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day, hour, minute);
 
-            long timestamp = calendar.getTimeInMillis();
-            int activeStatus = 1; // Assuming 1 for active status
-            String paymentStatus = getPaymentStatus();
+                long timestamp = calendar.getTimeInMillis();
+                int activeStatus = 1; // Assuming 1 for active status
+                String paymentStatus = getPaymentStatus();
 
-            // Create an event object with updated details
-            event updatedEvent = new event(auth.getCurrentUser().getUid(), spinnerSportsCategory.getSelectedItem().toString(),
-                    spinnerSportsType.getSelectedItem().toString(), location, description, String.valueOf(timestamp),
-                    slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus, paymentStatus);
+                EventPayment payment = new EventPayment("","",0.0,0,0);
+                // Create an event object with updated details
+                event updatedEvent = new event(auth.getCurrentUser().getUid(), spinnerSportsCategory.getSelectedItem().toString(),
+                        spinnerSportsType.getSelectedItem().toString(), location, description, String.valueOf(timestamp),0,
+                        slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus, paymentStatus,payment);
 
-            // Reference to the Firebase database
-            DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
 
-            // Update the existing event in the database with the updated details
-            hostedEventsRef.child(uniqueId).setValue(updatedEvent);
 
-            // Show a success message
-            Toast.makeText(this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+                // Reference to the Firebase database
+                DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
 
-            redirectToDashboardWithFragmentSelected(2);
-        }
+                // Update the existing event in the database with the updated details
+                hostedEventsRef.child(uniqueId).setValue(updatedEvent);
+
+                // Show a success message
+                Toast.makeText(this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+
+                redirectToDashboardWithFragmentSelected(2);
+            }
         }catch (Exception e) {
             e.printStackTrace();
             // Handle any exceptions here

@@ -1,0 +1,151 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".HostConfirmationPayment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header -->
+            <TextView
+                android:id="@+id/textViewHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Payment Confirmation Slip"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- User Information -->
+            <TextView
+                android:id="@+id/textViewUserID"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="User ID:"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/textViewSportsCategory"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sports Category:" />
+
+            <TextView
+                android:id="@+id/textViewSportsType"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sports Type:" />
+
+            <TextView
+                android:id="@+id/textViewLocation"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location:" />
+
+            <TextView
+                android:id="@+id/textViewDescription"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description:" />
+
+            <!-- ... (Continue for other fields) -->
+
+            <!-- Payment Summary -->
+            <TextView
+                android:id="@+id/textViewPaymentSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Payment Summary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/textViewTotalSlots"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Slots:" />
+
+            <TextView
+                android:id="@+id/textViewSlotsAvailable"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Slots Available:" />
+
+            <TextView
+                android:id="@+id/textViewFreeBooking"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Free Booking:" />
+
+            <TextView
+                android:id="@+id/textViewPricePerSlot"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Price Per Slot:" />
+
+            <TextView
+                android:id="@+id/textViewTimestamp"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Timestamp:" />
+
+            <TextView
+                android:id="@+id/textViewActiveStatus"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Active Status:" />
+
+            <TextView
+                android:id="@+id/textViewPaymentStatus"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Payment Status:"
+                android:textColor="#DC3A3A" />
+
+            <TextView
+                android:id="@+id/textViewMinPyment"
+                style="@style/PaymentField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bookng Fee : $10"
+                android:textAlignment="viewEnd"
+                android:textStyle="bold" />
+
+            <!-- Payment Button -->
+            <Button
+                android:id="@+id/paymentButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Make Payment"
+                android:onClick="onPaymentButtonClick"
+                android:layout_marginTop="16dp"
+                android:background="@color/intro_green"
+                android:textColor="@android:color/white"
+                android:padding="12dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

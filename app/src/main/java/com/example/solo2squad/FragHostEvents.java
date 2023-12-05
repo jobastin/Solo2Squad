@@ -1,5 +1,6 @@
 package com.example.solo2squad;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +18,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.solo2squad.Authentication.LoginActivity;
+import com.example.solo2squad.ProfileSection.ProfileSection1Activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,12 +30,28 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.stripe.android.PaymentConfiguration;
+import com.stripe.android.Stripe;
+import com.stripe.android.paymentsheet.PaymentSheet;
+import com.stripe.android.paymentsheet.PaymentSheetResult;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 
 public class FragHostEvents extends Fragment {
 
@@ -50,6 +70,37 @@ public class FragHostEvents extends Fragment {
     private TextView textViewTimeError;
 
     private boolean ischecked = true;
+
+    private String pKey = StripeConfig.PUBLISHABLE_KEY;
+    private String sKey = StripeConfig.S_KEY;
+    PaymentSheet paymentSheet;
+    OkHttpClient client = new OkHttpClient();
+
+    private String storedClientSecret;
+    private String customerId;
+    private String ephemeralKey;
+
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Initialize Stripe with your publishable key
+        PaymentConfiguration.init(requireContext(), pKey);
+
+        // Create a new instance of the Stripe class
+        ///stripe = new Stripe(requireContext());
+        paymentSheet=new PaymentSheet(this,paymentSheetResult -> {
+            handlePaymentSheetResult(paymentSheetResult);
+            addEventToFirebase();
+            clearFields();
+
+        });
+
+
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,10 +143,11 @@ public class FragHostEvents extends Fragment {
                 }
             });
         }
-        
+
         return view;
     }
 
+    //fetching sports category to the spinner
     private void fetchSportsCategories() {
         sportsCategoryRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -147,6 +199,7 @@ public class FragHostEvents extends Fragment {
         });
     }
 
+    //fetching sports types to the spinner
     private void fetchSportsTypes(String selectedCategoryID) {
         sportsTypeRef.orderByChild("category_id").equalTo(Integer.parseInt(selectedCategoryID))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -175,6 +228,7 @@ public class FragHostEvents extends Fragment {
                     }
                 });
     }
+    //handling the free bookings
     private void handleFreeBookingCheckBox() {
 
         if (checkBoxFreeBooking.isChecked()) {
@@ -185,12 +239,220 @@ public class FragHostEvents extends Fragment {
         }
     }
 
+    //adding data to DB..payment gateway initial call
     private void hostEvent() {
         if (validateFields() && isFutureTimeSelected()) {
-            addEventToFirebase();
+            if(checkBoxFreeBooking.isChecked()){
+                Log.e("is1Checked","is1checked");
+                addEventToFirebase();
+                clearFields();
+                startActivity(new Intent(requireContext(), DashboardActivity.class));
+            }
+            else {
+                addEventToFirebase();
+                clearFields();
+                Log.e("isnot1Checked", "isnot1checked");
+                //createStripeCustomer();
+
+            }
         }
 
     }
+
+
+
+    //creating Stripe customer
+    private void createStripeCustomer() {
+        // Assuming you have some form of authentication, like Firebase Authentication
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            String email = currentUser.getEmail(); // Use email as a unique identifier for the customer
+
+            // Build the request body with the customer's email
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("email", email)
+                    .build();
+
+            // Build the request with the customer creation endpoint
+            Request request = new Request.Builder()
+                    .url("https://api.stripe.com/v1/customers")
+                    .header("Authorization", "Bearer " + sKey)
+                    .post(requestBody)
+                    .build();
+
+            // Use the OkHttpClient to make the network call
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String responseBody = response.body().string();
+                        Log.d("Stripe", "Customer created: " + responseBody);
+
+                        customerId = extractCustomerId(responseBody);
+
+                        // Use the retrieved customer ID to create ephemeral key and payment intent
+                        createEphemeralKey(customerId);
+                        createPaymentIntent(customerId);
+                    } else {
+                        Log.e("Stripe", "Error creating customer: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Log.e("Stripe", "Error creating customer: " + e.getMessage());
+                }
+            });
+        } else {
+            Log.e("Stripe", "Current user is null");
+        }
+    }
+
+    private String extractCustomerId(String responseBody) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody);
+            return jsonObject.optString("id");
+        } catch (JSONException e) {
+            Log.e("Stripe", "Error extracting customer ID: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+    //creating the ephemeral key for customer
+    private void createEphemeralKey(String customerId) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("customer", customerId)
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://api.stripe.com/v1/ephemeral_keys")
+                .header("Authorization", "Bearer " + sKey)
+                .header("Stripe-Version", "2023-10-16")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    // Extract and store the ephemeral key
+                    ephemeralKey = extractEphemeralKey(responseBody);
+                    Log.d("Stripe", "Ephemeral key created: " + responseBody);
+                } else {
+                    Log.e("Stripe", "Error creating ephemeral key: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.e("Stripe", "Error creating ephemeral key: " + e.getMessage());
+            }
+        });
+    }
+
+    // Method to extract the ephemeral key from the response body
+    private String extractEphemeralKey(String responseBody) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody);
+            return jsonObject.optString("secret");
+        } catch (JSONException e) {
+            Log.e("Stripe", "Error extracting ephemeral key: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+    //creating payment and adding the amount
+    private void createPaymentIntent(String customerId) {
+//        boolean freeBooking = checkBoxFreeBooking.isChecked();
+//        double amount = freeBooking ? 0.0 : Double.parseDouble(editTextPricePerSlot.getText().toString().trim());
+//        amount=(int)amount*100;
+        int amount = 89120;
+        RequestBody requestBody = new FormBody.Builder()
+                .add("customer", customerId)
+                .add("amount", String.valueOf(amount))
+                .add("currency", "cad")  // Replace with your desired currency
+                .add("automatic_payment_methods[enabled]", "true")
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://api.stripe.com/v1/payment_intents")
+                .header("Authorization", "Bearer " + sKey)
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    Log.d("Stripe", "Payment intent created: " + responseBody);
+                    storedClientSecret = extractClientSecret(responseBody);
+
+
+
+                    // Open the PaymentSheet for payment confirmation
+                    paymentSheet.presentWithPaymentIntent(responseBody);
+                    //PaymentFlow();
+                } else {
+                    Log.e("Stripe", "Error creating payment intent: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.e("Stripe", "Error creating payment intent: " + e.getMessage());
+            }
+        });
+    }
+
+    //extracting client secreat key for payment flow
+    private String extractClientSecret(String responseBody) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody);
+            return jsonObject.optString("client_secret");
+        } catch (JSONException e) {
+            Log.e("Stripe", "Error extracting client secret: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private void PaymentFlow() {
+
+
+        paymentSheet.presentWithPaymentIntent(
+                storedClientSecret,new PaymentSheet.Configuration("Solo2Squad",
+                        new PaymentSheet.CustomerConfiguration(
+                                customerId,ephemeralKey
+                        ))
+        );
+    }
+
+    //handling the payment result : success or failure
+    private void handlePaymentSheetResult(PaymentSheetResult paymentSheetResult) {
+        if (paymentSheetResult instanceof PaymentSheetResult.Canceled) {
+            //paymentCheck=false;
+            Log.e("Cancelled","handle payment");
+            //Toast.makeText(requireContext(), "Payment Cancelled !!! Please try again", Toast.LENGTH_SHORT).show();
+        } else if (paymentSheetResult instanceof PaymentSheetResult.Failed) {
+            //paymentCheck=false;
+            //Toast.makeText(requireContext(), "Payment Failed !!! Please try again", Toast.LENGTH_SHORT).show();
+            Log.e("Failed","handle payment");
+        } else if (paymentSheetResult instanceof PaymentSheetResult.Completed) {
+
+
+            // Toast.makeText(requireContext(), "Payment Success", Toast.LENGTH_SHORT).show();
+
+            Log.e("Complete","handle payment");
+            startActivity(new Intent(requireContext(), FragManageEvents.class));
+        }
+    }
+
+
+
+    //field validations
     private boolean validateFields() {
         boolean isValid = true;
 
@@ -325,18 +587,21 @@ public class FragHostEvents extends Fragment {
                             ((TextView) spinnerSportsType.getSelectedView()).setError("No sports types available for the selected category");
                             ischecked = false;
                         } else {
-                            // Clear the error if valid sports types are available
-                            ((TextView) spinnerSportsType.getSelectedView()).setError(null);
-
-                            // Check if "Select Type" is selected in sports type
-                            String selectedSportsType = spinnerSportsType.getSelectedItem().toString();
-                            if ("Select Type".equals(selectedSportsType)) {
-                                // Show error next to the sports type spinner
-                                ((TextView) spinnerSportsType.getSelectedView()).setError("Please select a sports type");
-                                ischecked = false;
-                            } else {
-                                // Clear the error if a valid sports type is selected
+                            // Check if selected view is not null before using it
+                            if (spinnerSportsType.getSelectedView() != null) {
+                                // Clear the error if valid sports types are available
                                 ((TextView) spinnerSportsType.getSelectedView()).setError(null);
+
+                                // Check if "Select Type" is selected in sports type
+                                String selectedSportsType = spinnerSportsType.getSelectedItem().toString();
+                                if ("Select Type".equals(selectedSportsType)) {
+                                    // Show error next to the sports type spinner
+                                    ((TextView) spinnerSportsType.getSelectedView()).setError("Please select a sports type");
+                                    ischecked = false;
+                                } else {
+                                    // Clear the error if a valid sports type is selected
+                                    ((TextView) spinnerSportsType.getSelectedView()).setError(null);
+                                }
                             }
                         }
                     }
@@ -356,6 +621,7 @@ public class FragHostEvents extends Fragment {
         String sportsType = spinnerSportsType.getSelectedItem().toString();
         String location = editTextLocation.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
+        int totalSlots = Integer.parseInt(editTextSlotsAvailable.getText().toString().trim());
         int slotsAvailable = Integer.parseInt(editTextSlotsAvailable.getText().toString().trim());
         boolean freeBooking = checkBoxFreeBooking.isChecked();
         double pricePerSlot = freeBooking ? 0.0 : Double.parseDouble(editTextPricePerSlot.getText().toString().trim());
@@ -375,32 +641,106 @@ public class FragHostEvents extends Fragment {
         String paymentStatus = getPaymentStatus();
 
         // Create an event object
-        event newEvent = new event(userID, sportsCategory, sportsType, location, description, String.valueOf(timestamp),
-                slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus, paymentStatus);
+        //event newEvent = new event(userID, sportsCategory, sportsType, location, description, String.valueOf(timestamp),totalSlots,
+        //slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus,paymentStatus,payment);
 
         // Reference to the Firebase database
-        DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
+        //DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
 
         // Push the new event to the database
-        String eventKey = hostedEventsRef.push().getKey();
-        hostedEventsRef.child(eventKey).setValue(newEvent);
+        //String eventKey = hostedEventsRef.push().getKey();
+        //hostedEventsRef.child(eventKey).setValue(newEvent);
+        //EventPayment payment = new EventPayment();
+        //DatabaseReference paymentsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events").child(eventKey).child("Payments");
+        long currentTimestamp = System.currentTimeMillis();
+        if (checkBoxFreeBooking.isChecked()) {
 
-        // Navigate based on booking type
-        if (freeBooking) {
+            Log.e("isChecked","ischecked");
 
-            clearFields();
-            // Navigate to activity_manage events (assuming this is the target activity for free bookings)
-            // Intent manageEventsIntent = new Intent(requireContext(), ManageEventsActivity.class);
-            // startActivity(manageEventsIntent);
-        } else {
-            clearFields();
-            // Navigate to payment gateway (replace PaymentGatewayActivity with your actual payment gateway activity)
-            // Intent paymentGatewayIntent = new Intent(requireContext(), PaymentGatewayActivity.class);
-            // startActivity(paymentGatewayIntent);
+            EventPayment payment = new EventPayment("","",0.0,currentTimestamp,0);
+            event newEvent = new event(userID, sportsCategory, sportsType, location, description, String.valueOf(timestamp),totalSlots,
+                    slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus,paymentStatus,payment);
+
+
+            DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
+
+            String eventKey = hostedEventsRef.push().getKey();
+            hostedEventsRef.child(eventKey).setValue(newEvent);
+        }
+        else {
+//            EventPayment payment = new EventPayment(customerId, ephemeralKey, pricePerSlot, currentTimestamp, 0);
+//            event newEvent = new event(userID, sportsCategory, sportsType, location, description, String.valueOf(timestamp), totalSlots,
+//                    slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus,"Pending", payment);
+//
+//
+//            DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
+//
+//            String eventKey = hostedEventsRef.push().getKey();
+//            hostedEventsRef.child(eventKey).setValue(newEvent);
+
+            Log.e("isnotChecked", "isnotchecked");
+
+
+            Intent intent = new Intent(requireContext(), HostConfirmationPayment.class);
+            //intent.putExtra("eventKey", eventKey);
+            intent.putExtra("userID", userID);
+            intent.putExtra("sportsCategory", sportsCategory);
+            intent.putExtra("sportsType", sportsType);
+            intent.putExtra("location", location);
+            intent.putExtra("description", description);
+            intent.putExtra("totalSlots", totalSlots);
+            intent.putExtra("slotsAvailable", slotsAvailable);
+            intent.putExtra("freeBooking", freeBooking);
+            intent.putExtra("pricePerSlot", pricePerSlot);
+            intent.putExtra("timestamp", timestamp);
+            intent.putExtra("activeStatus", activeStatus);
+            intent.putExtra("paymentStatus", paymentStatus);
+            startActivity(intent);
+
+
+//            if (paymentCheck){
+//
+//                EventPayment payment = new EventPayment(customerId, ephemeralKey, pricePerSlot, currentTimestamp, 1);
+//            event newEvent = new event(userID, sportsCategory, sportsType, location, description, String.valueOf(timestamp), totalSlots,
+//                    slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus, "Done", payment);
+//
+//
+//            DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
+//
+//            String eventKey = hostedEventsRef.push().getKey();
+//            hostedEventsRef.child(eventKey).setValue(newEvent);
+//
+//            Log.e("isnotChecked", "isnotchecked");
+//        }
+//            else {
+//                EventPayment payment = new EventPayment(customerId, ephemeralKey, pricePerSlot, currentTimestamp, 0);
+//                event newEvent = new event(userID, sportsCategory, sportsType, location, description, String.valueOf(timestamp), totalSlots,
+//                        slotsAvailable, freeBooking, pricePerSlot, timestamp, activeStatus, "Failed", payment);
+//
+//
+//                DatabaseReference hostedEventsRef = FirebaseDatabase.getInstance().getReference().child("Hosted_events");
+//
+//                String eventKey = hostedEventsRef.push().getKey();
+//                hostedEventsRef.child(eventKey).setValue(newEvent);
+//
+//            }
+
         }
 
-        // Show a success message
-        Toast.makeText(requireContext(), "Event hosted successfully", Toast.LENGTH_SHORT).show();
+//        // Navigate based on booking type
+//        if (freeBooking) {
+//
+//            clearFields();
+//            // Navigate to activity_manage events (assuming this is the target activity for free bookings)
+//            // Intent manageEventsIntent = new Intent(requireContext(), ManageEventsActivity.class);
+//            // startActivity(manageEventsIntent);
+//        } else {
+//            clearFields();
+//            // Navigate to payment gateway (replace PaymentGatewayActivity with your actual payment gateway activity)
+//            // Intent paymentGatewayIntent = new Intent(requireContext(), PaymentGatewayActivity.class);
+//            // startActivity(paymentGatewayIntent);
+//        }
+
     }
 
     private String getPaymentStatus() {

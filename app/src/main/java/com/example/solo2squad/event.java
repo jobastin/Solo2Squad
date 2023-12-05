@@ -7,31 +7,44 @@ public class event {
     private String location;
     private String description;
     private String time;
+    private int totalSlots;
     private int slotsAvailable;
     private boolean freeBooking;
     private double pricePerSlot;
     private long timestamp;
     private int activeStatus;
+    private EventPayment eventPayment;
     private String payment_status;
-
     private String key;
 
-    public event(String userID, String sportsCategory, String sportsType, String location, String description, String time, int slotsAvailable, boolean freeBooking, double pricePerSlot, long timestamp, int activeStatus, String payment_status) {
+
+    public event(String userID, String sportsCategory, String sportsType, String location, String description, String time, int totalSlots, int slotsAvailable, boolean freeBooking, double pricePerSlot, long timestamp, int activeStatus,String payment_status,EventPayment eventPayment) {
         this.userID = userID;
         this.sportsCategory = sportsCategory;
         this.sportsType = sportsType;
         this.location = location;
         this.description = description;
         this.time = time;
+        this.totalSlots=totalSlots;
         this.slotsAvailable = slotsAvailable;
         this.freeBooking = freeBooking;
         this.pricePerSlot = pricePerSlot;
         this.timestamp = timestamp;
         this.activeStatus = activeStatus;
-        this.payment_status =payment_status;
+        this.eventPayment = eventPayment;
+        this.payment_status = payment_status;
     }
 
     public event() {
+
+    }
+
+    public int getTotalSlots() {
+        return totalSlots;
+    }
+
+    public void setTotalSlots(int totalSlots) {
+        this.totalSlots = totalSlots;
     }
 
 
@@ -123,19 +136,27 @@ public class event {
         this.userID = userID;
     }
 
-    public String getPayment_status() {
-        return payment_status;
-    }
-
-    public void setPayment_status(String payment_status) {
-        this.payment_status = payment_status;
-    }
-
     public String getKey() {
         return key;
     }
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public EventPayment getEventPayment() {
+        return eventPayment;
+    }
+
+    public void setEventPayment(EventPayment eventPayment) {
+        this.eventPayment = eventPayment;
+    }
+
+    public String getPayment_status() {
+        return payment_status;
+    }
+
+    public void setPayment_status(String payment_status) {
+        this.payment_status = payment_status;
     }
 }

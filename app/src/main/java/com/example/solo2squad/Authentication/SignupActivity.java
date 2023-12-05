@@ -120,6 +120,7 @@ public class SignupActivity extends AppCompatActivity {
                                             if (emailTask.isSuccessful()) {
                                                 Toast.makeText(SignupActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
                                             } else {
+                                                Toast.makeText(SignupActivity.this, "Please try Again !!", Toast.LENGTH_SHORT).show();
                                                 Log.e("Email Verification", "Failed to send verification email", emailTask.getException());
                                             }
                                         }
@@ -140,7 +141,7 @@ public class SignupActivity extends AppCompatActivity {
                                     DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
                                     usersRef.child(uid).setValue(newUser);
 
-                                    Toast.makeText(SignupActivity.this, "Authentication success.", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(SignupActivity.this, "Authentication success.", Toast.LENGTH_SHORT).show();
 
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();

@@ -65,5 +65,19 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-accessibility:3.4.0")
     androidTestImplementation("androidx.test.espresso:espresso-web:3.4.0")
     implementation("software.aws.rds:aws-mysql-jdbc:1.1.11")
+
+    //payment gateway
+//    implementation("com.stripe:stripe-java:20.77.0")
+//    implementation("com.stripe:stripe-android:17.2.0")
+//    implementation("com.android.volley:volley:1.1.0")
+
+    implementation("com.stripe:stripe-android:20.5.0")
+    //implementation("com.stripe:stripe-paymentsheet:20.5.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    testImplementation("org.mockito:mockito-core:3.6.0")
+    testImplementation("junit:junit:4.13.1")
+    testImplementation("org.robolectric:robolectric:4.11.1")
+
+
 }
 
